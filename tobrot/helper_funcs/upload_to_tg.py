@@ -17,37 +17,40 @@ import time
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from PIL import Image
-from tobrot.helper_funcs.display_progress import progress_for_pyrogram, humanbytes
+from pyrogram.types import (
+    InputMediaDocument,
+    InputMediaVideo,
+    InputMediaAudio
+)
+from tobrot.helper_funcs.display_progress import (
+    progress_for_pyrogram,
+    humanbytes
+)
 from tobrot.helper_funcs.help_Nekmo_ffmpeg import take_screen_shot
 from tobrot.helper_funcs.split_large_files import split_large_files
 from tobrot.helper_funcs.copy_similar_file import copy_file
-
 from tobrot import (
     TG_MAX_FILE_SIZE,
     EDIT_SLEEP_TIME_OUT,
     DOWNLOAD_LOCATION
 )
 
-from pyrogram import (
-    InputMediaDocument,
-    InputMediaVideo,
-    InputMediaAudio
-)
-
-
 async def upload_to_tg(
     message,
     local_file_name,
     from_user,
     dict_contatining_uploaded_files,
-    edit_media=False
+    edit_media=False,
+    custom_caption=None
 ):
     LOGGER.info(local_file_name)
     base_file_name = os.path.basename(local_file_name)
-    caption_str = ""
-    caption_str += "<code>"
-    caption_str += base_file_name
-    caption_str += "</code>"
+    caption_str = custom_caption
+    if not (caption_str and edit_media):
+        LOGGER.info("fall-back to default file_name")
+        caption_str = "<code>"
+        caption_str += base_file_name
+        caption_str += "</code>"
     # caption_str += "\n\n"
     # caption_str += "<a href='tg://user?id="
     # caption_str += str(from_user)
@@ -73,7 +76,8 @@ async def upload_to_tg(
                 os.path.join(local_file_name, single_file),
                 from_user,
                 dict_contatining_uploaded_files,
-                edit_media
+                edit_media,
+                caption_str
             )
     else:
         if os.path.getsize(local_file_name) > TG_MAX_FILE_SIZE:
@@ -204,7 +208,7 @@ async def upload_single_file(message, local_file_name, caption_str, from_user, e
                     thumb=thumb,
                     supports_streaming=True,
                     disable_notification=True,
-                    reply_to_message_id=message.reply_to_message.message_id,
+                    # reply_to_message_id=message.reply_to_message.message_id,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         "trying to upload",
@@ -259,7 +263,7 @@ async def upload_single_file(message, local_file_name, caption_str, from_user, e
                     title=title,
                     thumb=thumb,
                     disable_notification=True,
-                    reply_to_message_id=message.reply_to_message.message_id,
+                    # reply_to_message_id=message.reply_to_message.message_id,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         "trying to upload",
@@ -301,7 +305,7 @@ async def upload_single_file(message, local_file_name, caption_str, from_user, e
                     caption=caption_str,
                     parse_mode="html",
                     disable_notification=True,
-                    reply_to_message_id=message.reply_to_message.message_id,
+                    # reply_to_message_id=message.reply_to_message.message_id,
                     progress=progress_for_pyrogram,
                     progress_args=(
                         "trying to upload",

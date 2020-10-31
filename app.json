@@ -15,8 +15,8 @@
     "leecher"
   ],
   "repository": "https://github.com/SpEcHiDe/PublicLeech",
-  "success_url": "https://telegram.dog/ThankTelegram",
   "website": "https://github.com/SpEcHiDe/PublicLeech",
+  "logo": "https://telegra.ph/file/8b973b270f4f380a427b1.png",
   "env": {
     "ENV": {
       "description": "Setting this to ANYTHING will enable webhooks when in env mode",
@@ -68,17 +68,26 @@
     "TG_OFFENSIVE_API": {
       "description": "should be an URL accepting the FormParams {i}, {m}, and {t}",
       "required": false
+    },
+    "R_CLONE_CONF_URI": {
+      "description": "should be a Telegram URL",
+      "required": false
+    },
+    "R_CLONE_DEST": {
+      "description": "destination path for rclone, must start with '/'",
+      "value": "/PublicLeech",
+      "required": false
+    },
+    "SHOULD_USE_BUTTONS": {
+      "description": "because, https://t.me/c/1494623325/5603",
+      "required": false
+    },
+    "LANG": {
+      "description": "Setting the encoding to UTF-8 Dont touch this",
+      "value": "C.UTF-8"
     }
   },
-  "addons": [
-  ],
-  "buildpacks": [{
-    "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
-  }, {
-    "url": "https://github.com/SayanthD/aria2-heroku"
-  }, {
-    "url": "heroku/python"
-  }],
+  "stack": "container",
   "formation": {
     "worker": {
       "quantity": 1,
